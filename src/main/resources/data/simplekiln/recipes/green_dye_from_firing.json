@@ -1,0 +1,9 @@
+{
+  "type": "simplekiln:firing",
+  "ingredient": {
+    "item": "minecraft:cactus"
+  },
+  "result": "minecraft:green_dye",
+  "experience": 1.0,
+  "cookingtime": 100
+}
