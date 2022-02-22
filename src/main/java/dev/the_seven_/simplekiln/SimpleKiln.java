@@ -36,7 +36,6 @@ public class SimpleKiln
     public static final String MOD_ID = "simplekiln";
 
     public static final ResourceLocation INTERACT_WITH_KILN = makeCustomStat("interact_with_kiln", StatFormatter.DEFAULT);
-    public static RecipeType<FiringRecipe> FIRING_RECIPE = new FiringRecipe.FiringRecipeType();
 
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, SimpleKiln.MOD_ID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, SimpleKiln.MOD_ID);
@@ -58,7 +57,9 @@ public class SimpleKiln
 
     private static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, SimpleKiln.MOD_ID);
     public static final RegistryObject<RecipeSerializer<FiringRecipe>> FIRING_SERIALIZER = RECIPE_SERIALIZERS.register("firing",
-            () -> new SimpleCookingSerializer<>(FiringRecipe::new, 100));
+//            () -> new SimpleCookingSerializer<>(FiringRecipe::new, 100));
+            FiringRecipe.Serializer::new);
+    public static RecipeType<FiringRecipe> FIRING_RECIPE = new FiringRecipe.FiringRecipeType();
 
     public SimpleKiln() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
