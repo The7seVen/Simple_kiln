@@ -1,31 +1,30 @@
 package dev.the_seven_.simplekiln;
 
-import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.stats.StatFormatter;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.stats.IStatFormatter;
 import net.minecraft.stats.Stats;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SimpleCookingSerializer;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
@@ -35,31 +34,30 @@ public class SimpleKiln
 {
     public static final String MOD_ID = "simplekiln";
 
-    public static final ResourceLocation INTERACT_WITH_KILN = makeCustomStat("interact_with_kiln", StatFormatter.DEFAULT);
+    public static final ResourceLocation INTERACT_WITH_KILN = makeCustomStat("interact_with_kiln", IStatFormatter.DEFAULT);
 
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, SimpleKiln.MOD_ID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, SimpleKiln.MOD_ID);
     public static final RegistryObject<Block> KILN = registerBlock("kiln",
-            () -> new KilnBlock(BlockBehaviour.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.5F).lightLevel(litBlockEmission(13))));
+            () -> new KilnBlock(AbstractBlock.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.5F).lightLevel(litBlockEmission(13))));
     private static <T extends Block> RegistryObject<T> registerBlock(String pName, Supplier<T> pBlock) {
         RegistryObject<T> block = BLOCKS.register(pName, pBlock);
-        SimpleKiln.ITEMS.register(pName, () -> new BlockItem(block.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS)));
+        SimpleKiln.ITEMS.register(pName, () -> new BlockItem(block.get(), new Item.Properties().tab(ItemGroup.TAB_DECORATIONS)));
         return block;
     }
 
-    public static final DeferredRegister<BlockEntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, SimpleKiln.MOD_ID);
-    public static final RegistryObject<BlockEntityType<KilnBlockEntity>> KILN_ENTITY_TYPE = ENTITY_TYPES.register("kiln",
-            () -> BlockEntityType.Builder.of(KilnBlockEntity::new, SimpleKiln.KILN.get()).build(null));
+    public static final DeferredRegister<TileEntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, SimpleKiln.MOD_ID);
+    public static final RegistryObject<TileEntityType<KilnBlockEntity>> KILN_ENTITY_TYPE = ENTITY_TYPES.register("kiln",
+            () -> TileEntityType.Builder.of(KilnBlockEntity::new, SimpleKiln.KILN.get()).build(null));
 
-    private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, SimpleKiln.MOD_ID);
-    public static final RegistryObject<MenuType<KilnContainer>> KILN_CONTAINER = CONTAINERS.register("kiln",
-            () -> new MenuType<>(KilnContainer::new));
+    private static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, SimpleKiln.MOD_ID);
+    public static final RegistryObject<ContainerType<KilnContainer>> KILN_CONTAINER = CONTAINERS.register("kiln",
+            () -> new ContainerType<>(KilnContainer::new));
 
-    private static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, SimpleKiln.MOD_ID);
-    public static final RegistryObject<RecipeSerializer<FiringRecipe>> FIRING_SERIALIZER = RECIPE_SERIALIZERS.register("firing",
-//            () -> new SimpleCookingSerializer<>(FiringRecipe::new, 100));
+    private static final DeferredRegister<IRecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, SimpleKiln.MOD_ID);
+    public static final RegistryObject<IRecipeSerializer<FiringRecipe>> FIRING_SERIALIZER = RECIPE_SERIALIZERS.register("firing",
             FiringRecipe.Serializer::new);
-    public static RecipeType<FiringRecipe> FIRING_RECIPE = new FiringRecipe.FiringRecipeType();
+    public static IRecipeType<FiringRecipe> FIRING_RECIPE = new FiringRecipe.FiringRecipeType();
 
     public SimpleKiln() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -77,14 +75,14 @@ public class SimpleKiln
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
-        MenuScreens.register(SimpleKiln.KILN_CONTAINER.get(), KilnScreen::new);
+        ScreenManager.register(SimpleKiln.KILN_CONTAINER.get(), KilnScreen::new);
     }
 
     private static ToIntFunction<BlockState> litBlockEmission(int pLightValue) {
         return (p_50763_) -> p_50763_.getValue(BlockStateProperties.LIT) ? pLightValue : 0;
     }
 
-    private static ResourceLocation makeCustomStat(String pKey, StatFormatter pFormatter) {
+    private static ResourceLocation makeCustomStat(String pKey, IStatFormatter pFormatter) {
         ResourceLocation resourcelocation = new ResourceLocation(pKey);
         Registry.register(Registry.CUSTOM_STAT, pKey, resourcelocation);
         Stats.CUSTOM.get(resourcelocation, pFormatter);

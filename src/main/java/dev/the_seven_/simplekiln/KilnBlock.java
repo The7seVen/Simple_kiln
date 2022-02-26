@@ -1,52 +1,50 @@
 package dev.the_seven_.simplekiln;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.AbstractFurnaceBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.AbstractFurnaceBlock;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
 import java.util.Random;
 
 public class KilnBlock extends AbstractFurnaceBlock {
-    public KilnBlock(BlockBehaviour.Properties pProperties) {
+    public KilnBlock(AbstractBlock.Properties pProperties) {
         super(pProperties);
     }
 
-    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return new KilnBlockEntity(pPos, pState);
+    public TileEntity newBlockEntity(IBlockReader p_196283_1_) {
+        return new KilnBlockEntity();
     }
 
-    @Nullable
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        return createFurnaceTicker(pLevel, pBlockEntityType, SimpleKiln.KILN_ENTITY_TYPE.get());
-    }
+//    @Nullable
+//    public <T extends TileEntity> BlockEntityTicker<T> getTicker(World pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
+//        return createFurnaceTicker(pLevel, pBlockEntityType, SimpleKiln.KILN_ENTITY_TYPE.get());
+//    }
 
-    protected void openContainer(Level pLevel, BlockPos pPos, Player pPlayer) {
-        BlockEntity blockentity = pLevel.getBlockEntity(pPos);
+    protected void openContainer(World pLevel, BlockPos pPos, PlayerEntity pPlayer) {
+        TileEntity blockentity = pLevel.getBlockEntity(pPos);
         if (blockentity instanceof KilnBlockEntity) {
-            pPlayer.openMenu((MenuProvider)blockentity);
+            pPlayer.openMenu((INamedContainerProvider)blockentity);
             pPlayer.awardStat(SimpleKiln.INTERACT_WITH_KILN);
         }
     }
 
-    public void animateTick(BlockState pState, Level pLevel, BlockPos pPos, Random pRandom) {
+    public void animateTick(BlockState pState, World pLevel, BlockPos pPos, Random pRandom) {
         if (pState.getValue(LIT)) {
             double d0 = (double)pPos.getX() + 0.5D;
             double d1 = (double)pPos.getY();
             double d2 = (double)pPos.getZ() + 0.5D;
             if (pRandom.nextDouble() < 0.1D) {
-                pLevel.playLocalSound(d0, d1, d2, SoundEvents.BLASTFURNACE_FIRE_CRACKLE, SoundSource.BLOCKS, 1.0F, 1.0F, false);
+                pLevel.playLocalSound(d0, d1, d2, SoundEvents.BLASTFURNACE_FIRE_CRACKLE, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
             }
             pLevel.addParticle(ParticleTypes.SMOKE, d0, d1 + 1.1D, d2, 0.0D, 0.0D, 0.0D);
 
