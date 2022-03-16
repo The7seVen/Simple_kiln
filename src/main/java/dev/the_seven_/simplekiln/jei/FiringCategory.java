@@ -8,17 +8,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.the_seven_.simplekiln.FiringRecipe;
 import dev.the_seven_.simplekiln.SimpleKiln;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.IFocus;
 import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -44,7 +41,6 @@ public class FiringCategory implements IRecipeCategory<FiringRecipe> {
     protected final IDrawableAnimated animatedFlame;
 
     public FiringCategory(IGuiHelper guiHelper) {
-//        super(guiHelper, SimpleKiln.KILN.get(), "gui.jei.category.firing", 100);
         this.background = guiHelper.createDrawable(KilnPlugin.RECIPE_GUI_VANILLA, 0, 114, 82, 54);
         this.regularCookTime = 100;
         this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(SimpleKiln.KILN.get()));
@@ -70,14 +66,20 @@ public class FiringCategory implements IRecipeCategory<FiringRecipe> {
         return this.cachedArrows.getUnchecked(cookTime);
     }
 
+    @SuppressWarnings("removal")
     @Override
     public ResourceLocation getUid() {
         return UID;
     }
 
+    @SuppressWarnings("removal")
     @Override
     public Class<? extends FiringRecipe> getRecipeClass() {
         return FiringRecipe.class;
+    }
+
+    public RecipeType<FiringRecipe> getRecipeType() {
+        return KilnPlugin.FIRING;
     }
 
     @Override
@@ -152,11 +154,11 @@ public class FiringCategory implements IRecipeCategory<FiringRecipe> {
 
     @Override
     public boolean isHandled(FiringRecipe recipe) {
-//        return IRecipeCategory.super.isHandled(recipe);
         return  !recipe.isSpecial();
     }
 
     //pre 9.4 compat
+    /*
     @Override
     public void setIngredients(FiringRecipe recipe, IIngredients ingredients) {
         ingredients.setInputIngredients(recipe.getIngredients());
@@ -191,5 +193,5 @@ public class FiringCategory implements IRecipeCategory<FiringRecipe> {
 
         drawExperience(recipe, stack, 0);
         drawCookTime(recipe, stack, 45);
-    }
+    }*/
 }
