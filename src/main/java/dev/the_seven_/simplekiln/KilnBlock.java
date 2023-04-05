@@ -36,7 +36,7 @@ public class KilnBlock extends AbstractFurnaceBlock {
         BlockEntity blockentity = pLevel.getBlockEntity(pPos);
         if (blockentity instanceof KilnBlockEntity) {
             pPlayer.openMenu((MenuProvider)blockentity);
-            pPlayer.awardStat(SimpleKiln.INTERACT_WITH_KILN);
+//            pPlayer.awardStat(SimpleKiln.INTERACT_WITH_KILN);
         }
     }
 

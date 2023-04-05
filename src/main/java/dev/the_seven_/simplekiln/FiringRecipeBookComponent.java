@@ -2,7 +2,6 @@ package dev.the_seven_.simplekiln;
 
 import net.minecraft.client.gui.screens.recipebook.AbstractFurnaceRecipeBookComponent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -12,7 +11,7 @@ import java.util.Set;
 
 @OnlyIn(Dist.CLIENT)
 public class FiringRecipeBookComponent extends AbstractFurnaceRecipeBookComponent {
-    private static final Component FILTER_NAME = new TranslatableComponent("gui.recipebook.toggleRecipes.fireable");
+    private static final Component FILTER_NAME = Component.translatable("gui.recipebook.toggleRecipes.fireable");
 
     protected Component getRecipeFilterName() {
         return FILTER_NAME;

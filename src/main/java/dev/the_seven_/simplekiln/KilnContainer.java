@@ -8,10 +8,10 @@ import net.minecraft.world.inventory.RecipeBookType;
 
 public class KilnContainer extends AbstractFurnaceMenu {
     public KilnContainer(int pContainerId, Inventory pInventory) {
-        super(SimpleKiln.KILN_CONTAINER.get(), SimpleKiln.FIRING_RECIPE, RecipeBookType.FURNACE, pContainerId, pInventory);
+        super(SimpleKiln.KILN_CONTAINER.get(), SimpleKiln.FIRING_RECIPE.get(), RecipeBookType.FURNACE, pContainerId, pInventory);
     }
 
     public KilnContainer(int pContainerId, Inventory pInventory, Container pContainer, ContainerData PData) {
-        super(SimpleKiln.KILN_CONTAINER.get(), SimpleKiln.FIRING_RECIPE, RecipeBookType.FURNACE, pContainerId, pInventory, pContainer, PData);
+        super(SimpleKiln.KILN_CONTAINER.get(), SimpleKiln.FIRING_RECIPE.get(), RecipeBookType.FURNACE, pContainerId, pInventory, pContainer, PData);
     }
 }
